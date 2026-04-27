@@ -1,0 +1,37 @@
+---
+import { getEntry } from 'astro:content';
+import { CATEGORIES, formatDate } from '~/lib/categories';
+import Icons from './Icons.astro';
+import Placeholder from './Placeholder.astro';
+
+interface Props { entry: any; big?: boolean; eager?: boolean; }
+const { entry, big = false, eager = false } = Astro.props;
+
+const cat = CATEGORIES.find((c) => c.slug === entry.data.category);
+const author = await getEntry('authors', entry.data.author);
+const url = `/blog/${entry.data.category}/${entry.slug.split('/').pop()}/`;
+---
+<article class="card">
+  <a class="card-link" href={url} aria-label={entry.data.title}></a>
+  <Placeholder
+    label={entry.data.placeholder}
+    badge={cat?.name}
+    src={entry.data.heroImage}
+    alt={entry.data.heroAlt ?? entry.data.title}
+    ratio={big ? '16/10' : '16/10'}
+    loading={eager ? 'eager' : 'lazy'}
+    width={big ? 1200 : 800}
+    height={big ? 750 : 500}
+  />
+  <div class="card-meta">
+    <time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
+    <span class="dot" aria-hidden="true"></span>
+    <span><Icons name="clock" /> {entry.data.readMin} min</span>
+  </div>
+  <h3>{entry.data.title}</h3>
+  <p>{entry.data.excerpt}</p>
+  <div class="card-foot">
+    <span>{author?.data.name}</span>
+    <span style="color: var(--accent)">{entry.data.tag}</span>
+  </div>
+</article>

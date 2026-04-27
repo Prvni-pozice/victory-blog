@@ -1,0 +1,20 @@
+---
+import { CATEGORIES, formatDate } from '~/lib/categories';
+import Icons from './Icons.astro';
+
+interface Props { entry: any; idx: number; }
+const { entry, idx } = Astro.props;
+const cat = CATEGORIES.find((c) => c.slug === entry.data.category);
+const url = `/blog/${entry.data.category}/${entry.slug.split('/').pop()}/`;
+---
+<article class="list-row">
+  <a class="row-link" href={url} aria-label={entry.data.title}></a>
+  <span class="row-num">{String(idx + 1).padStart(2, '0')}</span>
+  <div class="row-title">
+    <h3>{entry.data.title}</h3>
+    <p>{entry.data.excerpt}</p>
+  </div>
+  <span class="row-cat">{cat?.name}</span>
+  <span class="row-date"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></span>
+  <span class="row-arrow"><Icons name="arrow" /></span>
+</article>

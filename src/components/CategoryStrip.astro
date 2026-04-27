@@ -1,0 +1,30 @@
+---
+import { CATEGORIES } from '~/lib/categories';
+import { getCollection } from 'astro:content';
+
+interface Props { active?: string | null; total?: number; }
+const { active = null, total } = Astro.props;
+
+const allArticles = await getCollection('blog', ({ data }) => !data.draft);
+const totalCount = total ?? allArticles.length;
+
+const categoryCounts = new Map<string, number>();
+for (const a of allArticles) {
+  categoryCounts.set(a.data.category, (categoryCounts.get(a.data.category) ?? 0) + 1);
+}
+---
+<nav class="cat-strip" aria-label="Kategorie">
+  <div class="shell">
+    <a class={`cat-pill ${!active ? 'active' : ''}`} href="/">
+      Všechny <span class="count">{totalCount}</span>
+    </a>
+    {CATEGORIES.map((cat) => (
+      <a
+        class={`cat-pill ${active === cat.slug ? 'active' : ''}`}
+        href={`/blog/kategorie/${cat.slug}/`}
+      >
+        {cat.name} <span class="count">{categoryCounts.get(cat.slug) ?? 0}</span>
+      </a>
+    ))}
+  </div>
+</nav>

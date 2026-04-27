@@ -1,0 +1,158 @@
+---
+title: "Diagnostika SoH baterie: jak ji čteme a kdy se jí dá věřit"
+excerpt: "State of Health není jediný údaj, který v servisu sledujeme. Ukazujeme reálný diagnostický protokol, jak vypadá u zdravé baterie a co znamenají výkyvy. Pro fleet manažery i nákupčí second-hand vozu."
+category: servis
+author: mp
+date: 2026-01-20
+readMin: 7
+tag: "Návod"
+placeholder: "Foto: diagnostický nástroj připojený k vozu"
+heroAlt: "Servisní technik provádí diagnostiku SoH baterie elektrické dodávky"
+relatedSlugs:
+  - servis/rychlonabijeni-zivotnost-baterie
+  - servis/oem-nahradni-dily-vs-aftermarket
+  - elektricke-dodavky/leasing-vs-koup-elektricka-dodavka
+seo:
+  description: "Diagnostika State of Health baterie elektrické dodávky: jak ji měříme, co znamenají hodnoty 92–98 %, kdy je čas na servis. Praktický návod."
+---
+
+State of Health (SoH) baterie je číslo, které **stojí za polovinu hodnoty každé použité elektrické dodávky**. Při nákupu second-hand vozu, při kontrole ze záruky, při zvažování výměny — všude se musí umět správně přečíst. V tomto článku vám ukážeme, **jak SoH měříme v autorizovaném servisu**, co reálně znamenají hodnoty 92–98 % a kdy začít plánovat výměnu modulu.
+
+Toto je technický článek pro fleet manažery, mechanikké specialisty a lidi, kteří kupují použitý elektromobil. Pokud hledáte základní úvod do tématu, začněte [článkem o životnosti baterie](/blog/servis/rychlonabijeni-zivotnost-baterie/).
+
+## Co je SoH a co není
+
+**State of Health** je odhad zbývající kapacity baterie ve srovnání s nominální (továrenskou) hodnotou. Vyjadřuje se v procentech.
+
+Co SoH **NENÍ**:
+- Skutečně změřená kapacita do posledního Wh
+- Záruka, že vůz dojede X km
+- Konstantní hodnota — kolísá podle teploty, posledních cyklů a algoritmu BMS
+
+Co SoH **JE**:
+- Algoritmický odhad BMS založený na **chování článků za posledních 30–90 dní**
+- Statistický nástroj pro **trend** (klesá rychle? stabilně? skokem?)
+- Hlavní vstup pro plánování výměny
+
+## Diagnostický protokol — co dělám u zákazníka
+
+Tady je můj reálný checklist, který používám na kontrolách u flotil [VICTORY E-Cargo](https://www.victoryauto.cz/elektricke-dodavky/e-cargo):
+
+### 1. Připojení diagnostiky
+
+Servisní zařízení (V-Diag 4 nebo OBD scanner s podporou EV protokolu) připojím k OBD2 portu. Vůz musí být **při 30–80 % SoC** (pro reprezentativní hodnoty BMS) a teplota baterie 15–30 °C. Mimo tento rozsah jsou hodnoty zkreslené.
+
+### 2. Stažení basic dat
+
+- Nominální kapacita (88 kWh)
+- Aktuální využitelná kapacita (Wh)
+- SoH (%)
+- Počet ekvivalentních cyklů
+- Teplota baterie (každý modul samostatně)
+- Napětí každého modulu
+
+### 3. Klíčové metriky
+
+| Metrika | Akceptovatelné | Pozornost | Servis |
+|---|---|---|---|
+| SoH | 92–100 % | 86–91 % | pod 86 % |
+| Rozdíl napětí mezi moduly | pod 30 mV | 30–60 mV | nad 60 mV |
+| Rozdíl teplot mezi moduly | pod 2 °C | 2–4 °C | nad 4 °C |
+| Pokles SoH za 3 měsíce | pod 0,8 % | 0,8–1,5 % | nad 1,5 % |
+
+Klíčové je **kombinovat všechny čtyři**. SoH 95 % vypadá výborně, ale pokud má jeden modul o 80 mV nižší napětí než ostatní, **je to vážný indikátor** připravujícího se selhání.
+
+### 4. Kontextové dotazy
+
+Číslo bez kontextu je k ničemu. Vždy se ptám:
+
+- Jaký je profil nabíjení? (DC vs. AC poměr — viz [článek o vlivu rychlonabíjení](/blog/servis/rychlonabijeni-zivotnost-baterie/))
+- Kde vůz parkuje v létě? (souvislost s [letním provozem](/blog/elektricke-dodavky/letni-provoz-tropy-baterie/))
+- Byly extrémně dlouhé jízdy s SoC pod 10 %?
+- Je vůz často udržován na 100 % SoC po delší dobu?
+
+Chování majitele má **stejný dopad jako stáří baterie**.
+
+## Reálné protokoly z praxe
+
+Pro lepší představu, jak vypadají rozumné a problematické vozy:
+
+### Vůz A — 38 měsíců, 92 000 km, fleet vinařství
+
+| Metrika | Hodnota |
+|---|---|
+| SoH | 94,8 % |
+| Cyklů | 612 |
+| Δ napětí modulů | 18 mV |
+| Δ teplot | 1,2 °C |
+| Pokles za 90 dní | 0,4 % |
+
+**Hodnocení:** Výborný stav. Šetrný profil nabíjení (~85 % AC), parkování pod stříškou, udržovaný letní/zimní servis. Predikce dosažení 80 % SoH: **8–10 let**.
+
+### Vůz B — 28 měsíců, 145 000 km, kurýrní služba
+
+| Metrika | Hodnota |
+|---|---|
+| SoH | 89,2 % |
+| Cyklů | 1180 |
+| Δ napětí modulů | 42 mV |
+| Δ teplot | 2,8 °C |
+| Pokles za 90 dní | 1,1 % |
+
+**Hodnocení:** Pozornost. Velmi vysoký nájezd, převažuje DC nabíjení (~65 %). Na hranici doporučení — naplánována kontrola za 90 dní + úprava nabíjecího profilu (víc AC v noci).
+
+### Vůz C — 41 měsíců, 78 000 km, městská služba
+
+| Metrika | Hodnota |
+|---|---|
+| SoH | 91,4 % |
+| Cyklů | 540 |
+| Δ napětí modulů | 78 mV ⚠️ |
+| Δ teplot | 1,9 °C |
+| Pokles za 90 dní | 0,6 % |
+
+**Hodnocení:** SoH stále dobré, ale **rozdíl napětí 78 mV** ukazuje na problémový modul. Plánovaná výměna jednoho modulu v záruce (vůz má 5letou záruku na baterii).
+
+## Co kdyz vůz není v autorizovaném servisu
+
+Pokud kupujete second-hand elektrickou dodávku **mimo autorizovanou síť**, postupujte takto:
+
+1. Vyžádejte si **diagnostický protokol z OBD scanneru** (ne jen údaj na palubní desce)
+2. Žádejte o **fotodokumentaci modulových napětí**
+3. Pokud prodejce neumožní protokol, požádejte o **nezávislou diagnostiku** v autorizovaném servisu (typicky 1 200–1 800 Kč)
+4. **Nepřijímejte odpověď „SoH 95 %"** bez detailních dat — to je marketingová zkratka, ne diagnostika
+
+V [článku o leasingu vs. koupi](/blog/elektricke-dodavky/leasing-vs-koup-elektricka-dodavka.mdx) jsme ukázali, jak velkou roli hraje rezid. hodnota baterie pro celkovou ekonomiku vozu. Diagnostika SoH je nejlepší ochrana před nákupem „kočky v pytli".
+
+## Záruka výrobce a pravidla pro výměnu
+
+VICTORY E-Cargo má **záruku 8 let / 160 000 km na trakční baterii** s tím, že garantuje:
+
+- SoH ≥ 70 % po 8 letech NEBO 160 000 km
+- Funkčnost všech modulů
+- Bez kritických chyb BMS
+
+Pokud SoH klesne pod 70 % během záruky, výrobce **vyměňuje moduly**, dokud se hodnota nedostane nad 80 %. Detaily jsou v [původní specifikaci E-Cargo](https://www.victoryauto.cz/elektricke-dodavky/e-cargo).
+
+Z naší zkušenosti za 3 roky provozu **38 vozů**: byly **2 reklamace baterie** v rámci záruky, obě úspěšně vyřízeny. Žádný vůz nedosáhl 70 % SoH.
+
+## Praktický doporučený režim diagnostiky
+
+Pro fleet manažera doporučujeme:
+
+| Frekvence | Co dělat |
+|---|---|
+| Každých 6 měsíců | Standardní servisní kontrola s SoH čtením |
+| Při překročení 100k km | Detailní protokol modulů + plán dalších kroků |
+| Před prodejem | Nezávislá diagnostika a protokol pro kupujícího |
+| Po významné události (havárie, dlouhý prostoj, extrém. teploty) | Mimořádná kontrola |
+
+Pokud máte flotilu 5+ vozů, máme **paušální diagnostický program** v rámci servisního kontraktu — automaticky 2× ročně, výsledky agregované do dashboard, alert při překročení limitů.
+
+## Závěr
+
+SoH je **užitečný, ale nezatěžte ho víc, než unese**. Sám o sobě je jen jedna z metrik. Skutečná diagnostika kombinuje SoH, modulová napětí, teplotní profil a kontext provozu.
+
+V Victory Auto děláme tuto kompletní diagnostiku ve [všech našich pobočkách](/blog/novinky/victory-otevira-pobocku-brno/) jako standard. Trvá to 30–45 minut, stojí 1 200 Kč a zachrání vás od chybných rozhodnutí v hodnotě **desítky tisíc Kč**.
+
+[Domluvte si termín](https://www.victoryauto.cz/kontakt) — typicky umíme nabídnout do 5 pracovních dní.

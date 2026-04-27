@@ -1,0 +1,20 @@
+---
+// Newsletter — server-side validation se napojí na backend (Mailchimp/Brevo) později.
+// Zatím form bez akce — pouze UI.
+---
+<section class="newsletter" aria-labelledby="nl-h">
+  <div class="shell">
+    <div>
+      <span class="eyebrow">▌ Newsletter</span>
+      <h2 id="nl-h" style="margin-top: 12px">Praktické zkušenosti<br />z e-mobility, jednou měsíčně.</h2>
+      <p>Případové studie, srovnání, dotační okna a změny legislativy — bez marketingových floskulí. Žádný spam, jen obsah pro fleet manažery a provozní ředitele.</p>
+    </div>
+    <div>
+      <form class="newsletter-form" action="/newsletter/" method="post" data-newsletter>
+        <input type="email" name="email" required placeholder="vase@firma.cz" aria-label="E-mail pro odběr newsletteru" />
+        <button type="submit">Odebírat →</button>
+      </form>
+      <p class="newsletter-meta">Souhlas se zpracováním · 4 200 odběratelů</p>
+    </div>
+  </div>
+</section>

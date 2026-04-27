@@ -1,0 +1,32 @@
+---
+import Icons from './Icons.astro';
+interface Props { page: { currentPage: number; lastPage: number; url: { prev?: string; next?: string; current: string } }; baseHref: string; }
+const { page, baseHref } = Astro.props;
+
+const pages: number[] = [];
+const total = page.lastPage;
+const cur = page.currentPage;
+const window = 2;
+for (let i = 1; i <= total; i++) {
+  if (i === 1 || i === total || (i >= cur - window && i <= cur + window)) pages.push(i);
+}
+
+function pageHref(n: number) {
+  if (n === 1) return baseHref;
+  return `${baseHref}${n}/`;
+}
+---
+{total > 1 && (
+  <nav class="pagination" aria-label="Stránkování">
+    <a class="btn-link" href={page.url.prev ?? '#'} aria-disabled={!page.url.prev}>← Předchozí</a>
+    <div class="page-numbers">
+      {pages.map((n, i) => (
+        <>
+          {i > 0 && pages[i] - pages[i - 1] > 1 && <span class="page-num" aria-hidden="true">…</span>}
+          <a class={`page-num ${n === cur ? 'active' : ''}`} href={pageHref(n)} aria-current={n === cur ? 'page' : undefined}>{n}</a>
+        </>
+      ))}
+    </div>
+    <a class="btn-link" href={page.url.next ?? '#'} aria-disabled={!page.url.next}>Další →</a>
+  </nav>
+)}

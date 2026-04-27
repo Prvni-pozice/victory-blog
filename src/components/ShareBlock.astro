@@ -1,0 +1,44 @@
+---
+import Icons from './Icons.astro';
+interface Props { url: string; title: string; }
+const { url, title } = Astro.props;
+const enc = encodeURIComponent;
+const tw = `https://twitter.com/intent/tweet?url=${enc(url)}&text=${enc(title)}`;
+const li = `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`;
+const fb = `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`;
+---
+<div class="share-block">
+  <div class="share-title">▌ Sdílet</div>
+  <div class="share-list">
+    <a class="share-btn" href={li} target="_blank" rel="noopener">
+      <Icons name="linkedin" /><span>LinkedIn</span>
+    </a>
+    <a class="share-btn" href={tw} target="_blank" rel="noopener">
+      <Icons name="twitter" /><span>X / Twitter</span>
+    </a>
+    <a class="share-btn" href={fb} target="_blank" rel="noopener">
+      <Icons name="facebook" /><span>Facebook</span>
+    </a>
+    <button class="share-btn" type="button" data-copy={url} aria-label="Kopírovat odkaz">
+      <Icons name="copy" /><span class="cp-label">Kopírovat odkaz</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-copy]');
+  if (btn) {
+    btn.addEventListener('click', async () => {
+      const url = btn.dataset.copy!;
+      try {
+        await navigator.clipboard.writeText(url);
+        const lbl = btn.querySelector<HTMLSpanElement>('.cp-label');
+        if (lbl) {
+          const orig = lbl.textContent;
+          lbl.textContent = '✓ Zkopírováno';
+          setTimeout(() => { lbl.textContent = orig; }, 2000);
+        }
+      } catch (e) { /* swallow */ }
+    });
+  }
+</script>

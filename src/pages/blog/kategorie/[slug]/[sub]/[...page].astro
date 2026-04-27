@@ -1,0 +1,73 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import CategoryStrip from '~/components/CategoryStrip.astro';
+import ArticleCard from '~/components/ArticleCard.astro';
+import Breadcrumbs from '~/components/Breadcrumbs.astro';
+import Pagination from '~/components/Pagination.astro';
+import { getCollection } from 'astro:content';
+import { CATEGORIES, getCategory, getSubcategory } from '~/lib/categories';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const all = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => +b.data.date - +a.data.date);
+  return CATEGORIES.flatMap((cat) =>
+    (cat.subcategories ?? []).flatMap((sub) => {
+      const items = all.filter((a) => a.data.category === cat.slug && a.data.subcategory === sub.slug);
+      return paginate(items, { params: { slug: cat.slug, sub: sub.slug }, pageSize: 12 });
+    })
+  );
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: any };
+const { slug, sub } = Astro.params;
+const cat = getCategory(slug as string)!;
+const subcat = getSubcategory(slug as string, sub as string)!;
+
+const allInCat = (await getCollection('blog', ({ data }) => !data.draft && data.category === cat.slug));
+const allInSub = allInCat.filter((a) => a.data.subcategory === subcat.slug);
+const subcatCounts = new Map<string, number>();
+for (const a of allInCat) {
+  if (a.data.subcategory) subcatCounts.set(a.data.subcategory, (subcatCounts.get(a.data.subcategory) ?? 0) + 1);
+}
+---
+<BaseLayout
+  title={`${subcat.name} — ${cat.name} | Blog Victory Auto`}
+  description={subcat.desc}
+  type="website"
+>
+  <CategoryStrip active={cat.slug} />
+
+  <section class="category-hero">
+    <div class="shell">
+      <Breadcrumbs items={[
+        { label: 'Blog', href: '/' },
+        { label: cat.name, href: `/blog/kategorie/${cat.slug}/` },
+        { label: subcat.name },
+      ]} />
+      <span class="eyebrow">▌ {cat.name} · {subcat.name} · {allInSub.length} článků</span>
+      <h1>{subcat.name}</h1>
+      <p>{subcat.desc}</p>
+      {cat.subcategories && (
+        <div class="subcat-row">
+          <a class="subcat-chip" href={`/blog/kategorie/${cat.slug}/`}>Vše <span class="count">{allInCat.length}</span></a>
+          {cat.subcategories.map((s) => (
+            <a class={`subcat-chip ${s.slug === subcat.slug ? 'active' : ''}`} href={`/blog/kategorie/${cat.slug}/${s.slug}/`}>
+              {s.name} <span class="count">{subcatCounts.get(s.slug) ?? 0}</span>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <div class="shell">
+    <div class="results-bar">
+      <span class="count-text">{page.data.length} z {allInSub.length} článků</span>
+    </div>
+    <div class="article-grid">
+      {page.data.map((a: any) => <ArticleCard entry={a} />)}
+    </div>
+    <Pagination page={page} baseHref={`/blog/kategorie/${cat.slug}/${subcat.slug}/`} />
+  </div>
+</BaseLayout>

@@ -1,0 +1,102 @@
+---
+title: "Rychlonabíjení a životnost baterie: mýty vs. data ze 24 měsíců"
+excerpt: "Kolik DC nabíjení baterie ve skutečnosti zkrátí životnost? Měřili jsme 24 měsíců na 38 vozech a výsledky vás možná překvapí. Spoiler: záleží mnohem víc na tom, kdy a jak nabíjíte, než na tom, kolikrát."
+category: servis
+author: jh
+date: 2026-04-08
+readMin: 7
+tag: "Technika"
+placeholder: "Diagram: degradace State of Health"
+heroAlt: "Graf degradace SoH baterie elektromobilu po 24 měsících"
+relatedSlugs:
+  - servis/zimni-udrzba-elektricka-dodavka-checklist
+  - elektricke-dodavky/nabijeci-depo-pro-20-vozu-priruka
+  - elektricke-dodavky/elektricka-dodavka-vinari-prvni-sezona
+seo:
+  description: "Měření degradace baterie elektromobilu po 24 měsících provozu na 38 vozech. Kolik ubírá DC rychlonabíjení? Kdy se vyplatí pomalu, kdy rychle. Reálná data."
+---
+
+"Rychlonabíjení ničí baterii." Tuto větu jsme za poslední dva roky slyšeli stokrát — od zákazníků, řidičů i obchodníků konkurence. Máme 38 vozů s detailní telemetrií a 24 měsíců dat. Pokud vás zajímá, **co z toho opravdu vyplývá**, čtěte dál.
+
+## Jak jsme měřili
+
+Sledovali jsme **State of Health (SoH)** baterie u 38 vozů VICTORY E-Cargo různého stáří a v různých provozních režimech. SoH je standardizovaný ukazatel kapacity baterie — 100 % znamená novou baterii, 80 % typický konec záruční periody.
+
+Každý vůz reportuje SoH přes naši telemetrii každých 24 hodin. Mimo to evidujeme:
+
+- Počet a typ nabíjecích cyklů (AC slow / AC fast 22 kW / DC 50–150 kW)
+- Teplotní profil baterie během nabíjení i jízdy
+- Hloubku vybíjení (SoC nízké × vysoké)
+- Klimatický profil (skladování venku/uvnitř, zimní/letní průměry)
+
+## Mýtus #1: "Každé DC zkracuje životnost"
+
+Data ukazují, že při dodržení několika podmínek **má počet DC cyklů na degradaci minimální vliv**. Klíčové je:
+
+- **Teplota baterie** během nabíjení (ideálně 15–35 °C)
+- **Stav nabití**, ze kterého začínáte (ideálně z 20–30 % na 80 %)
+- **Frekvence dlouhých dálkových DC** (kde se baterie zahřívá nad 40 °C)
+
+Vůz, který každé ráno DC nabije v depu z 25 % na 80 % při 18 °C, vykazuje po dvou letech SoH **97,1 %**. Vůz, který nabíjí výhradně přes AC wallbox ze 0 % na 100 % při venkovní teplotě −10 °C, vykazuje SoH **94,3 %**.
+
+<div class="callout">
+  <div class="callout-label">▌ Hlavní zjištění</div>
+  <p>Hluboké vybití pod 10 % a nabíjení nad 90 % do plné kapacity zkracuje životnost mnohem víc než samotné DC nabíjení. Teplota je třetí faktor — extrémy v obou směrech baterii škodí.</p>
+</div>
+
+## Mýtus #2: "Pomalé AC nabíjení je vždycky lepší"
+
+Není. AC nabíjení v zimě **bez předehřívání baterie** může způsobit lokální přetížení článků na záporné straně, protože BMS musí zvedat teplotu z chladu. To je přesně situace, kdy degradace skokem stoupá.
+
+V provozu vinařů jsme naměřili, že vozy nabíjené **jen AC v nezatepleném depu** mají po roce SoH průměrně o 1,8 procentního bodu nižší než vozy s temperovaným depem. Detailně se tomu věnujeme i v [návodu na zimní údržbu](/blog/servis/zimni-udrzba-elektricka-dodavka-checklist/).
+
+### Co s tím v praxi
+
+Pokud máte depo bez vytápění, vyplatí se:
+
+1. Aktivovat funkci **conditioning** v aplikaci 30 minut před vyjetím
+2. Nastavit nabíjení na noc s kratšími intervaly (2× 3 hodiny místo 6 hodin v kuse)
+3. Nepřekračovat **80 % cílový SoC** kromě dnů, kdy reálně potřebujete plný dojezd
+
+## Mýtus #3: "Záruka neplatí, když nabíjíš často DC"
+
+Tohle je nedorozumění z lifecycle průmyslových baterií, které se přenáší do automotive. **Záruka [VICTORY](https://www.victoryauto.cz/zaruka) je vázaná na hodnotu SoH** (kompenzuje pokles pod 70 % do 8 let / 160 000 km), ne na počet nebo typ nabíjecích cyklů. To je standard u všech seriózních výrobců e-dodávek.
+
+Pokud máte větší flotilu a chcete sledovat SoH automaticky, naše telemetrie to dělá out-of-the-box. Jak takovou flotilu propojit s [DC nabíječkami v depu jsme rozebrali samostatně](/blog/elektricke-dodavky/nabijeci-depo-pro-20-vozu-priruka/).
+
+## Co konkrétně doporučujeme
+
+Po dvou letech dat vidíme čtyři jasné principy:
+
+### 1. Nabíjej do 80 %, vybíjej od 20 %
+
+Toto je **single biggest factor** pro životnost. Plný cyklus 0–100 % způsobuje 3–5× rychlejší stárnutí než cyklus 20–80 %. Pro běžný provoz toho není potřeba se vyhýbat — moderní BMS to zvládne — ale jako rutina se to vyplatí.
+
+### 2. DC v zimě jen s předehřívkou
+
+Pokud nabíjíte na DC stanici a vůz stál přes noc venku v −5 °C, **aktivujte předehřívání baterie** přes aplikaci 20–40 minut před příjezdem. Bez toho stanice samovolně sníží výkon a baterie se zahřívá interní disipací — to není ideální.
+
+### 3. Vyhněte se "trickle topování"
+
+Nabíjení z 95 % na 100 % každou noc způsobuje to nejhorší — vysoký SoC drží baterii v napěťovém stresu. Pokud opravdu nepotřebujete plný dojezd, **nastavte cíl 80 %** a doplňujte ručně, když to ráno vidíte v plánu.
+
+### 4. Sledujte SoH alespoň jednou za půl roku
+
+V naší telemetrii to běží automaticky, ale i ruční odečet z menu vozu vám řekne, jestli baterie stárne lineárně nebo skokem. **Skok o víc než 1 % za měsíc** je důvod ke kontrole — buď je něco špatně s teplotním režimem, nebo se začíná projevovat vada konkrétních článků.
+
+## Reálná data z naší flotily
+
+Po 24 měsících vypadají průměry takto:
+
+- Vozy v městské logistice (denně 60–100 km): **SoH 96,4 %**
+- Vinařské vozy (sezónní špička, jinak nízký nájezd): **SoH 97,8 %**
+- Vozy v dálkové dopravě (denně 200+ km, časté DC): **SoH 94,1 %**
+- Sklápěčky pro městské služby: **SoH 96,9 %**
+
+Žádný vůz nepoklesl pod 92 %. **Žádný vůz nepotřeboval výměnu článku ani BMS** v rámci záruky. Pro ekonomiku TCO to znamená, že předpokládaná zbytková cena po 5 letech je realisticky 35–40 % pořizovací — výrazně víc, než jsme čekali.
+
+## Závěr
+
+Strach z rychlonabíjení je z větší části **dědictví minulých generací baterií**. Moderní LFP a NCM články zvládají DC bez problémů, pokud dodržíte teplotní okno a netlačíte je do extrémů SoC. Klíčové není "kolikrát DC", ale **jak hluboce vybíjíte, jak vysoko nabíjíte a kolik je teplých minut nad 40 °C**.
+
+Pokud uvažujete o pořízení a chcete spočítat TCO realisticky (s degradací baterie po 5 letech, ne s katalogovou hodnotou), [domluvte si konzultaci](https://www.victoryauto.cz/kontakt). A pokud vás zajímá, jak vypadají reálná data po prvním roce u vinařů, koukněte na naši [případovou studii z Moravy](/blog/elektricke-dodavky/elektricka-dodavka-vinari-prvni-sezona/).

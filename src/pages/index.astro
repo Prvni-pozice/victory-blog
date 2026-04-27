@@ -1,0 +1,133 @@
+---
+// Hlavní stránka přesměruje na /blog/ (Astro static — render redirect)
+// Použijeme rovnou stejný obsah jako /blog/, abychom měli root jako blog landing.
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import CategoryStrip from '~/components/CategoryStrip.astro';
+import ArticleCard from '~/components/ArticleCard.astro';
+import ListRow from '~/components/ListRow.astro';
+import Pagination from '~/components/Pagination.astro';
+import Icons from '~/components/Icons.astro';
+import Placeholder from '~/components/Placeholder.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { CATEGORIES, SITE, formatDate } from '~/lib/categories';
+
+const all = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => +b.data.date - +a.data.date);
+
+const featured = all.find((a) => a.data.featured) ?? all[0];
+const featuredCat = CATEGORIES.find((c) => c.slug === featured.data.category);
+const featuredAuthor = await getEntry('authors', featured.data.author);
+
+const pageSize = 12;
+const articles = all.slice(0, pageSize);
+const lastPage = Math.max(1, Math.ceil(all.length / pageSize));
+
+const stats = [
+  { num: String(all.length), lbl: 'Článků' },
+  { num: String(CATEGORIES.length), lbl: 'Kategorií' },
+  { num: '600+', lbl: 'Vozů v provozu' },
+  { num: '4 200', lbl: 'Odběratelů' },
+];
+---
+<BaseLayout
+  title={`Blog Victory Auto — elektrické dodávky, servis, novinky`}
+  description="Blog o elektrických užitkových vozech, servisu a praxi Victory Auto. Případové studie, srovnání modelů, dotace 2026 a praktické zkušenosti z provozu napříč ČR a SR."
+  type="website"
+>
+  <CategoryStrip total={all.length} />
+
+  <section class="blog-hero" aria-labelledby="hero-h">
+    <div class="shell">
+      <div class="hero-left">
+        <span class="eyebrow">▌ Blog Victory Auto</span>
+        <h1 id="hero-h">Elektrická flotila, <span class="accent">v praxi.</span></h1>
+        <p>Případové studie, srovnání a praktické rady pro vinaře, města i firemní flotily. Píšeme o tom, co řeší Victory Auto každý den s 600+ vozy v provozu.</p>
+        <a class="btn btn-primary" href={`#nejnovejsi`}>Nejnovější články →</a>
+        <div class="hero-stats">
+          {stats.map((s) => (
+            <div class="hero-stat"><div class="num">{s.num}</div><div class="lbl">{s.lbl}</div></div>
+          ))}
+        </div>
+      </div>
+      <a class="hero-featured" href={`/blog/${featured.data.category}/${featured.slug.split('/').pop()}/`} aria-label={`Doporučujeme: ${featured.data.title}`}>
+        <Placeholder
+          klass="hero-featured-img"
+          ratio="4/3"
+          label={featured.data.placeholder}
+          src={featured.data.heroImage}
+          alt={featured.data.heroAlt ?? featured.data.title}
+          loading="eager"
+          width={800}
+          height={600}
+        />
+        <div class="hero-featured-body">
+          <div class="eyebrow-row">
+            <span class="tag">▌ Doporučujeme</span>
+            <span class="eyebrow">{featuredCat?.name}</span>
+          </div>
+          <h3>{featured.data.title}</h3>
+          <p>{featured.data.excerpt}</p>
+          <span class="btn-link">Číst případovku <Icons name="arrow" /></span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <div class="shell" id="nejnovejsi">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">▌ Nejnovější</span>
+        <h2>Čerstvě publikováno</h2>
+      </div>
+      <div class="layout-toggle" data-layout-toggle role="tablist" aria-label="Layout výpisu">
+        <button type="button" class="active" data-layout="magazine" role="tab" aria-selected="true"><Icons name="magazine" /> Magazín</button>
+        <button type="button" data-layout="grid" role="tab" aria-selected="false"><Icons name="grid" /> Mřížka</button>
+        <button type="button" data-layout="list" role="tab" aria-selected="false"><Icons name="list" /> Seznam</button>
+      </div>
+    </div>
+
+    <div class="article-grid magazine" data-grid>
+      {articles.map((a, i) => <ArticleCard entry={a} big={i === 0} eager={i < 2} />)}
+    </div>
+
+    <div class="article-list" data-list hidden>
+      {articles.map((a, i) => <ListRow entry={a} idx={i} />)}
+    </div>
+
+    <Pagination
+      page={{ currentPage: 1, lastPage, url: { current: '/', next: lastPage > 1 ? '/blog/2/' : undefined } }}
+      baseHref="/blog/"
+    />
+  </div>
+
+  <script>
+    // Layout toggle s persistencí v localStorage
+    const KEY = 'victory-blog-layout';
+    const tg = document.querySelector<HTMLElement>('[data-layout-toggle]');
+    const grid = document.querySelector<HTMLElement>('[data-grid]');
+    const list = document.querySelector<HTMLElement>('[data-list]');
+    if (tg && grid && list) {
+      const saved = (localStorage.getItem(KEY) as 'magazine' | 'grid' | 'list' | null) ?? 'magazine';
+      const apply = (mode: string) => {
+        grid.hidden = mode === 'list';
+        list.hidden = mode !== 'list';
+        grid.classList.remove('magazine');
+        if (mode === 'magazine') grid.classList.add('magazine');
+        tg.querySelectorAll('button').forEach((b) => {
+          const on = b.dataset.layout === mode;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-selected', String(on));
+        });
+      };
+      apply(saved);
+      tg.addEventListener('click', (e) => {
+        const t = e.target as HTMLElement;
+        const btn = t.closest('button[data-layout]') as HTMLButtonElement | null;
+        if (!btn) return;
+        const m = btn.dataset.layout!;
+        localStorage.setItem(KEY, m);
+        apply(m);
+      });
+    }
+  </script>
+</BaseLayout>

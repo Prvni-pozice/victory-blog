@@ -1,0 +1,196 @@
+---
+title: "Jak naprojektovat nabíjecí depo pro 20 elektrických dodávek"
+excerpt: "Od odhadu rezervovaného příkonu po výběr OCPP backendu, load managementu a redundance. Praktická příručka pro projektanty, energetiky i fleet manažery — vychází z reálné instalace u tří klientů."
+category: elektricke-dodavky
+subcategory: pro-mesta
+author: mp
+date: 2026-03-10
+readMin: 14
+tag: "Příručka"
+placeholder: "Schéma: nabíjecí depo s 20 vozy"
+heroAlt: "Schéma nabíjecího depa pro 20 elektrických dodávek s load managementem"
+relatedSlugs:
+  - elektricke-dodavky/sklapecka-mestske-sluzby-srovnani
+  - elektricke-dodavky/smetar-novy-jicin-rocni-zkusenost
+  - servis/rychlonabijeni-zivotnost-baterie
+seo:
+  description: "Návrh nabíjecího depa pro 20 elektrických dodávek: rezervovaný příkon, AC vs. DC poměr, load management, OCPP backend, redundance a TCO. Praktická příručka."
+---
+
+Postavit dobré nabíjecí depo pro flotilu 20 elektrických dodávek **není triviální technický úkol**. Je to průsečík elektroinženýrství, IT systémů, ekonomiky a provozního plánování. Tento článek je destilátem zkušeností z **tří reálných instalací**, které jsme dělali v posledních dvou letech — pro městské služby v Novém Jičíně (5 vozů), distribuční firmu v okolí Brna (12 vozů) a sklad logistiky u Mladé Boleslavi (24 vozů).
+
+Pokud aktuálně řešíte podobný projekt nebo se na něj chystáte, **použijte tento článek jako kontrolní seznam**. Není to přesný projekt — každá lokalita je jiná — ale 80 % otázek, které vás potkají, najdete tady zodpovězené.
+
+## 1. Začněte profilem provozu, ne počtem vozů
+
+Nejčastější chyba: zákazník přijde s otázkou *"Postavte nám depo pro 20 vozů."* My odpovídáme: *"Co dělají, kdy se vrací, kdy musí vyjet?"*
+
+Než budete kupovat byť jednu nabíječku, sedněte si k tabulce a vyplňte:
+
+| Parametr | Hodnota |
+|---|---|
+| Počet vozů | ? |
+| Typický denní nájezd na vůz | ? km |
+| Maximální denní nájezd | ? km |
+| Spotřeba na 100 km (zima/léto) | ? kWh |
+| Doba přítomnosti v depu | ? hodin |
+| Možnost nabíjení během dne (přestávka, polední) | ano/ne |
+
+**Z toho odvodíte denní spotřebu energie**. Pro běžné městské služby vychází 800–1 200 kWh/den na flotilu 20 vozů. Pro distribuci to může být 1 800–2 500 kWh/den.
+
+## 2. Rezervovaný příkon — kolik si vlastně zarezervovat
+
+Tady chybuje hodně projektů. **Nezarezervujte nadbytek "pro jistotu"** — platíte za něj fixně každý měsíc, i když ho nevyužijete.
+
+Postup výpočtu:
+
+1. **Spočítejte denní energii** (počet vozů × průměrná spotřeba × průměrný nájezd)
+2. **Rozdělte mezi noční a denní okno** — typicky 70/30 ve prospěch noci
+3. **Přičtěte 15 % rezervu** na nečekané situace (zimní špička, oprava jednoho wallboxu)
+
+Pro flotilu 20 vozů s denní spotřebou 1 200 kWh:
+
+- Noční okno (22:00–06:00, 8 h): 840 kWh / 8 h = **105 kW**
+- Denní okno (07:00–17:00, 10 h, jen dotočení): 360 kWh / 10 h = **36 kW**
+- S 15 % rezervou na noční špičku: **121 kW**
+
+To je **rezervovaný příkon, který skutečně využijete**. Bez load managementu by to bylo 22 wallboxů × 22 kW = 484 kW (což platit nechcete).
+
+<div class="callout">
+  <div class="callout-label">▌ Praktická poznámka</div>
+  <p>U distributora si nemusíte rezervovat víc, než využijete v patnáctiminutovém maxim. Load management drží špičku pod stropem a navíc skupinu wallboxů řídí podle priorit — takže můžete mít fyzicky instalovaných 484 kW, ale rezervovaných jen 121 kW.</p>
+</div>
+
+## 3. AC vs. DC — kolik čeho
+
+Naivní odpověď: "DC je rychlejší, dejme samá DC." Špatně. **DC je 4–6× dražší na pořízení a má vyšší energetické ztráty** (rektifikace, chlazení).
+
+Pro běžné depo flotily 20 vozů doporučujeme:
+
+- **20× AC wallbox 22 kW** (jeden na vůz, paralelně k parkovacím místům)
+- **2× DC stanice 50–80 kW** (pro polední dotočení a pro situace, kdy vůz nestojí celou noc)
+- **1× DC backup 22 kW** (pro mobilní nasazení nebo vůz s poruchou)
+
+Investiční rozpis (orientačně, ceny 2026):
+
+| Položka | Počet | Jednotková cena | Celkem |
+|---|---|---|---|
+| AC wallbox 22 kW | 20 | 35 000 Kč | 700 000 Kč |
+| DC stanice 50 kW | 2 | 380 000 Kč | 760 000 Kč |
+| Load manager + OCPP | 1 | 280 000 Kč | 280 000 Kč |
+| Trafostanice 250 kVA | 1 | 1 200 000 Kč | 1 200 000 Kč |
+| Kabeláž, instalace, projekt | — | — | 850 000 Kč |
+| **Celkem** | | | **3 790 000 Kč** |
+
+Z toho lze typicky **získat dotaci 25 % až 60 %** podle programu OPZP nebo IROP. Aktuální podmínky pro infrastrukturu probíráme i v [článku o dotacích na elektromobily 2026](/blog/novinky/dotace-2026-elektromobil-prehled/) — bonus 25 tisíc Kč na vůz na nabíjení je možné si zařadit ke každé žádosti.
+
+## 4. Load management — srdce celého systému
+
+Bez chytrého řízení je depo jen sběrka kabelů. Load management musí umět:
+
+- **Distribuci dynamicky** podle aktuální zátěže (ne statickou alokaci)
+- **Priority** — jeden vůz musí být ráno určitě plný, jiný stačí na 70 %
+- **Schedule** — odložit nabíjení do levné sazby (typicky 22:00–06:00)
+- **OCPP 1.6+ protokol** pro propojení s fleet managementem
+- **Watchdog** — detekce vypadlého wallboxu a přesun energie na ostatní
+
+Doporučujeme **vendor-agnostic řešení**. Tedy ne řízení, které funguje jen s wallboxy jednoho výrobce. Naše instalace běží na **OCPP 2.0.1** s otevřeným backendem, takže můžete mít wallboxy od ABB, AC nabíječky od Wallbox, DC stanice od Kempower — a všechno řídí jeden mozek.
+
+### Co konkrétně sledujeme
+
+Z provozu třech instalací vidíme, že load manager musí umět:
+
+1. **Anti-overcurrent** — při spouštění DC stanice nesmí překročit hlavní jistič
+2. **PV integration** (pokud máte fotovoltaiku) — přebytek z FVE směřuje preferenčně do nabíjení
+3. **Tariff awareness** — zná hodinové ceny silové elektřiny a přizpůsobuje časování
+4. **API pro fleet management** — vidí, který vůz je v depu a jaký má SoC
+
+## 5. Trafostanice a vlastní rozvod
+
+Pro 20 vozů s rezervovaným příkonem 121 kW typicky **nestačí běžná přípojka**. Potřebujete vlastní trafostanici 250 kVA (s rezervou na případné rozšíření).
+
+Dvě varianty:
+
+- **Vlastní trafostanice** v depu (250 kVA, cena ~1,2 mil Kč) — nezávislost, ale dlouhá realizace (typicky 8–14 měsíců s ČEZ Distribucí)
+- **Pronájem** od distributora — rychlejší (3–5 měsíců), ale vyšší roční náklady
+
+Doporučujeme vlastní pro flotily 15+ vozů. Pro menší (5–10 vozů) má pronájem smysl, jak ukázala instalace v [Novém Jičíně](/blog/elektricke-dodavky/smetar-novy-jicin-rocni-zkusenost/).
+
+## 6. Redundance a fallback
+
+Co se stane, když vypadne hlavní jistič? Když praskne kabel? Když vám ráno zjistíte, že 6 vozů nenabilo?
+
+V naší infrastruktuře vždy doporučujeme:
+
+- **N+1 redundance DC stanic** — když máte 2 DC pro flotilu, pořiďte 3 (jedna stojí jako záloha)
+- **Mobilní DC** v servisu — pro kritické situace (zimní výpadek nabíjení)
+- **Manuální load shed** — operátor může dočasně vypnout nepriorit. wallboxy
+- **Notifikace** — load manager pošle SMS/Slack/e-mail, když nabíjení selhalo
+
+V instalaci v Mladé Boleslavi (24 vozů) jsme zažili **3 výpadky za rok** — 2× hlavní jistič po bouřce, 1× výpadek OCPP backendu. Ve všech třech případech **nedošlo k provoznímu výpadku**, protože redundance fungovala.
+
+## 7. Bezpečnost a kybernetika
+
+**Nezapomeňte na kyberbezpečnost.** Wallboxy a DC stanice jsou síťová zařízení a v posledních letech se objevují útoky:
+
+- Únik provozních dat (kdy které vozidlo nabíjí)
+- Manipulace s tarify
+- Ransomware na backend OCPP
+
+Doporučení:
+
+- **Segmentovaná síť** — wallboxy na vlastní VLAN, oddělené od kanceláří
+- **Bez veřejných IP** na wallboxy — přístup jen přes VPN
+- **Pravidelné firmware update** — měsíčně, ideálně automaticky
+- **Audit logy** OCPP komunikace — kdo, kdy, co změnil
+
+## 8. Provozní procesy — co dělat ráno
+
+I nejlepší technický projekt selže, pokud nejsou nastavené procesy:
+
+1. **Ranní kontrola dispečera** — který vůz není dobit, proč
+2. **Plán svozu/rozvozu** — synchronizovaný s telemetrií vozů
+3. **Pravidla pro mimořádné situace** — kdo volá kam, když nabíjení selhalo
+4. **Měsíční reporting** — spotřeba, ztráty, anomálie
+
+V Novém Jičíně tento proces převzal dispečer technických služeb a trvalo zhruba 2 měsíce, než se "zkrojil". V Mladé Boleslavi byla potřeba dedikovaná energetik.
+
+## 9. Časté chyby v projektech
+
+Z analýzy 17 dotazů a 3 realizovaných projektů vidíme tyto opakované chyby:
+
+1. **Nedostatečná rezerva pro budoucí rozšíření** — instalace pro 20 vozů, na rozšíření na 30 by se musela měnit trafostanice
+2. **Levné DC stanice bez certifikátu** — neprošly povinnou revizí, museli jsme měnit
+3. **Statická alokace energie** bez load managementu — distributor naúčtoval rezerv. příkon na úrovni součtu wallboxů, ne reálné špičky
+4. **Wallboxy bez OCPP** — nešlo je zapojit do fleet managementu, museli jsme vyměnit
+5. **Špatně dimenzovaná kabeláž** — pokles napětí na konci řádu wallboxů snižoval skutečný výkon
+
+## 10. TCO depa za 5 let
+
+Pro instalaci 20 vozů vychází orientační TCO za 5 let:
+
+- Pořízení (s 35 % dotací): 2 460 000 Kč
+- Distribuce (rezerv. příkon 121 kW): 5× ~ 295 000 Kč/rok = 1 475 000 Kč
+- Silová elektřina (1 200 kWh/den × 250 dní × 5 let × 4,2 Kč): 6 300 000 Kč
+- Servis a údržba: 5× 80 000 Kč = 400 000 Kč
+- **Celkem: 10 635 000 Kč**
+
+Pro porovnání **stejnou flotilu na naftu** za 5 let:
+
+- 20 vozů × 90 000 Kč nafty/rok × 5 let = 9 000 000 Kč nafty
+- 20 vozů × 50 000 Kč servis/rok × 5 let = 5 000 000 Kč servisu
+- **Celkem: 14 000 000 Kč**
+
+**Rozdíl 3 365 000 Kč ve prospěch elektřiny** za 5 let. Při životnosti baterií 8+ let (viz [článek o životnosti baterie](/blog/servis/rychlonabijeni-zivotnost-baterie/)) se diference dál prohlubuje.
+
+## Závěr
+
+Stavba depa pro 20 vozů **stojí čas, peníze a hodně pozornosti detailům**. Ale pokud to uděláte správně, **vrátí se vám to za 4–5 let** v provozních úsporách. Klíčové je:
+
+1. Začít profilem provozu, ne počtem vozů
+2. Spočítat rezervovaný příkon **realisticky**
+3. Mít chytrý load management
+4. Plánovat redundanci a procesy
+5. Využít [dotace 2026](/blog/novinky/dotace-2026-elektromobil-prehled/)
+
+Pokud takový projekt právě řešíte, **rád vyjedu za vámi** a podíváme se na konkrétní lokaci. Naše [konzultanti pro infrastrukturu](https://www.victoryauto.cz/sluzby/infrastruktura) připravují projekty na klíč včetně dotační administrativy. První schůzka je bezplatná a typicky trvá 90 minut.

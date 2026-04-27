@@ -1,0 +1,51 @@
+---
+import { SITE } from '~/lib/categories';
+import Icons from './Icons.astro';
+
+interface Props { active?: 'blog' | 'home'; }
+const { active = 'blog' } = Astro.props;
+
+const navItems = [
+  { label: 'Vozy', href: `${SITE.mainSiteUrl}/elektricke-dodavky` },
+  { label: 'Servis', href: `${SITE.mainSiteUrl}/servis` },
+  { label: 'Pro firmy', href: `${SITE.mainSiteUrl}/pro-firmy` },
+  { label: 'Blog', href: '/', isBlog: true },
+  { label: 'O nás', href: `${SITE.mainSiteUrl}/o-nas` },
+  { label: 'Kontakt', href: `${SITE.mainSiteUrl}/kontakt` },
+];
+---
+<header class="site-header">
+  <div class="shell">
+    <a href="/" class="brand" aria-label="Victory Auto Blog — domů">
+      <span class="brand-mark" aria-hidden="true">V</span>
+      <span class="brand-text">
+        VICTORY
+        <small>Auto · Blog</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Hlavní navigace">
+      {navItems.map((it) => (
+        <a
+          href={it.href}
+          class={it.isBlog && active === 'blog' ? 'active' : ''}
+          rel={it.href.startsWith('http') ? 'noopener' : undefined}
+        >{it.label}</a>
+      ))}
+    </nav>
+
+    <div class="header-cta">
+      <form class="search-wrap" role="search" action="/blog/hledat/" method="get">
+        <Icons name="search" />
+        <input
+          class="search-input"
+          type="search"
+          name="q"
+          placeholder="Hledat článek…"
+          aria-label="Hledat na blogu"
+        />
+      </form>
+      <a class="btn btn-primary" href={`${SITE.mainSiteUrl}/konfigurator`} rel="noopener">Konfigurátor</a>
+    </div>
+  </div>
+</header>

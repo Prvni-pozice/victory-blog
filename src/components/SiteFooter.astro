@@ -1,0 +1,44 @@
+---
+import { CATEGORIES, SITE } from '~/lib/categories';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="shell">
+    <div class="brand-block">
+      <a href="/" class="brand">
+        <span class="brand-mark" aria-hidden="true">V</span>
+        <span class="brand-text">VICTORY<small>Auto · Blog</small></span>
+      </a>
+      <p>Elektrické užitkové vozy a kompletní servis pro flotily. Více než 600 vozů v provozu napříč ČR a SR.</p>
+    </div>
+    <div>
+      <h4>Blog</h4>
+      <ul>
+        {CATEGORIES.map((c) => <li><a href={`/blog/kategorie/${c.slug}/`}>{c.name}</a></li>)}
+        <li><a href="/rss.xml">RSS feed</a></li>
+        <li><a href="/sitemap-index.xml">Sitemap</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Společnost</h4>
+      <ul>
+        <li><a href={`${SITE.mainSiteUrl}/o-nas`} rel="noopener">O nás</a></li>
+        <li><a href={`${SITE.mainSiteUrl}/kariera`} rel="noopener">Kariéra</a></li>
+        <li><a href={`${SITE.mainSiteUrl}/pobocky`} rel="noopener">Pobočky</a></li>
+        <li><a href={`${SITE.mainSiteUrl}/press`} rel="noopener">Press kit</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Kontakt</h4>
+      <ul>
+        <li>{SITE.address}</li>
+        <li><a href={`tel:${SITE.phone.replace(/\s/g, '')}`}>{SITE.phone}</a></li>
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="shell footer-bottom">
+    <span>© {year} Victory Auto s.r.o.</span>
+    <span>Postaveno na Astro · Nasazeno v ČR</span>
+  </div>
+</footer>

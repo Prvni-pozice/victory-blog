@@ -1,0 +1,175 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import Breadcrumbs from '~/components/Breadcrumbs.astro';
+import TOC from '~/components/TOC.astro';
+import ShareBlock from '~/components/ShareBlock.astro';
+import AuthorCard from '~/components/AuthorCard.astro';
+import ArticleCard from '~/components/ArticleCard.astro';
+import Placeholder from '~/components/Placeholder.astro';
+import Icons from '~/components/Icons.astro';
+import { getCollection, getEntry } from 'astro:content';
+import { CATEGORIES, getCategory, getSubcategory, SITE, formatDate } from '~/lib/categories';
+
+export const getStaticPaths = (async () => {
+  const all = await getCollection('blog', ({ data }) => !data.draft);
+  return all.map((entry) => {
+    // entry.slug is the path inside content/blog/, e.g. "novinky/dotace-2026"
+    // Page route is /blog/[category]/[slug] — strip directory prefix.
+    const parts = entry.slug.split('/');
+    const slugOnly = parts[parts.length - 1];
+    return {
+      params: { category: entry.data.category, slug: slugOnly },
+      props: { entry },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props as { entry: any };
+const { Content, headings } = await entry.render();
+
+const cat = getCategory(entry.data.category)!;
+const sub = entry.data.subcategory ? getSubcategory(entry.data.category, entry.data.subcategory) : undefined;
+const author = await getEntry('authors', entry.data.author);
+
+// Related articles: explicitní z relatedSlugs, jinak doplnit z kategorie.
+const all = await getCollection('blog', ({ data }) => !data.draft);
+const explicit = (entry.data.relatedSlugs ?? [])
+  .map((rs: string) => all.find((a) => a.slug === rs || a.slug.endsWith('/' + rs)))
+  .filter(Boolean);
+
+const sameCategory = all
+  .filter((a) => a.id !== entry.id && a.data.category === entry.data.category)
+  .sort((a, b) => +b.data.date - +a.data.date);
+
+const relatedSet = new Map<string, any>();
+[...explicit, ...sameCategory].forEach((a) => { if (a && !relatedSet.has(a.id)) relatedSet.set(a.id, a); });
+const related = Array.from(relatedSet.values()).slice(0, 3);
+
+const url = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImage = entry.data.heroImage ?? entry.data.seo?.ogImage ?? '/og-default.svg';
+const seoTitle = entry.data.seo?.title ?? `${entry.data.title} — Blog Victory Auto`;
+const seoDescription = entry.data.seo?.description ?? entry.data.excerpt;
+
+// Article JSON-LD
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: entry.data.title,
+  description: entry.data.excerpt,
+  image: [new URL(ogImage, Astro.site).toString()],
+  datePublished: entry.data.date.toISOString(),
+  dateModified: (entry.data.updated ?? entry.data.date).toISOString(),
+  author: {
+    '@type': 'Person',
+    name: author?.data.name ?? 'Redakce Victory',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Victory Auto',
+    url: SITE.mainSiteUrl,
+    logo: { '@type': 'ImageObject', url: new URL('/logo.svg', Astro.site).toString() },
+  },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  articleSection: cat.name,
+  keywords: [cat.name, sub?.name, entry.data.tag].filter(Boolean).join(', '),
+  inLanguage: 'cs-CZ',
+};
+---
+<BaseLayout
+  title={seoTitle}
+  description={seoDescription}
+  ogImage={ogImage}
+  type="article"
+  pubDate={entry.data.date}
+  modDate={entry.data.updated}
+  authorName={author?.data.name}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleLd)} />
+  </Fragment>
+
+  <article>
+    <header class="article-hero">
+      <div class="shell">
+        <Breadcrumbs items={[
+          { label: 'Blog', href: '/' },
+          { label: cat.name, href: `/blog/kategorie/${cat.slug}/` },
+          ...(sub ? [{ label: sub.name, href: `/blog/kategorie/${cat.slug}/${sub.slug}/` }] : []),
+          { label: entry.data.title },
+        ]} />
+
+        <span class="eyebrow" style="color: var(--accent)">▌ {entry.data.tag} · {cat.name}{sub ? ` / ${sub.name}` : ''}</span>
+        <h1>{entry.data.title}</h1>
+        <p class="lede">{entry.data.excerpt}</p>
+
+        <div class="article-meta-row">
+          <div class="author-block">
+            <span class="author-avatar" aria-hidden="true">{author?.data.initials}</span>
+            <div class="author-info">
+              <div class="name">{author?.data.name}</div>
+              <div class="role">{author?.data.role}</div>
+            </div>
+          </div>
+          <div class="meta-stats">
+            <div class="meta-stat"><div class="v"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></div><div class="l">Publikováno</div></div>
+            <div class="meta-stat"><div class="v">{entry.data.readMin} min</div><div class="l">Doba čtení</div></div>
+          </div>
+        </div>
+
+        <Placeholder
+          klass="article-hero-img"
+          ratio="21/9"
+          label={entry.data.placeholder}
+          src={entry.data.heroImage}
+          alt={entry.data.heroAlt ?? entry.data.title}
+          loading="eager"
+          width={2400}
+          height={1029}
+        />
+      </div>
+    </header>
+
+    <div class="shell">
+      <div class="article-body-wrap">
+        <TOC headings={headings} tags={[entry.data.tag, cat.name, sub?.name].filter(Boolean) as string[]} />
+
+        <div class="article-body">
+          <Content />
+
+          <aside class="article-cta" role="complementary">
+            <div>
+              <h3>Zvažujete e-dodávku ve své flotile?</h3>
+              <p>Spočítáme vám návratnost na míru — podle nájezdu, profilu provozu a dostupné nabíjecí infrastruktury.</p>
+            </div>
+            <a class="btn btn-primary" href={`${SITE.mainSiteUrl}/kontakt?utm_source=blog&utm_medium=cta&utm_campaign=${entry.slug}`}>
+              Domluvit konzultaci →
+            </a>
+          </aside>
+        </div>
+
+        <aside class="article-rail">
+          <ShareBlock url={url} title={entry.data.title} />
+          <AuthorCard author={author} />
+        </aside>
+      </div>
+    </div>
+
+    {related.length > 0 && (
+      <section class="related-section">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">▌ Související</span>
+              <h2>Další z kategorie {cat.name}</h2>
+            </div>
+            <a class="btn-link" href={`/blog/kategorie/${cat.slug}/`}>Všechny v kategorii <Icons name="arrow" /></a>
+          </div>
+          <div class="article-grid">
+            {related.map((a) => <ArticleCard entry={a} />)}
+          </div>
+        </div>
+      </section>
+    )}
+  </article>
+</BaseLayout>

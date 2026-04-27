@@ -1,0 +1,17 @@
+---
+interface Props { author: any; }
+const { author } = Astro.props;
+---
+<div class="author-card">
+  <div class="author-card-title">▌ Autor</div>
+  <div class="author-card-body">
+    <div class="ac-row">
+      <span class="author-avatar" aria-hidden="true">{author.data.initials}</span>
+      <div class="author-info">
+        <div class="name">{author.data.name}</div>
+        <div class="role">{author.data.role}</div>
+      </div>
+    </div>
+    {author.data.bio && <p class="ac-bio">{author.data.bio}</p>}
+  </div>
+</div>

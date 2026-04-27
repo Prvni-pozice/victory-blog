@@ -1,0 +1,65 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import CategoryStrip from '~/components/CategoryStrip.astro';
+---
+<BaseLayout
+  title="Hledání — Blog Victory Auto"
+  description="Fulltext vyhledávání článků o elektromobilitě, e-dodávkách a servisu."
+  noindex
+>
+  <CategoryStrip />
+  <div class="shell">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">▌ Vyhledávání</span>
+        <h2>Najdi v blogu</h2>
+      </div>
+    </div>
+
+    <div id="search" data-pagefind-ui></div>
+
+    <link rel="stylesheet" href="/_pagefind/pagefind-ui.css" />
+    <script src="/_pagefind/pagefind-ui.js" is:inline></script>
+    <script is:inline>
+      window.addEventListener('DOMContentLoaded', function () {
+        if (window.PagefindUI) {
+          new window.PagefindUI({
+            element: '#search',
+            translations: {
+              placeholder: 'Hledat článek…',
+              clear_search: 'Smazat',
+              load_more: 'Načíst další',
+              search_label: 'Hledat',
+              filters_label: 'Filtry',
+              zero_results: 'Pro výraz [SEARCH_TERM] nejsou výsledky.',
+              many_results: 'Nalezeno [COUNT] výsledků pro [SEARCH_TERM]',
+              one_result: '1 výsledek pro [SEARCH_TERM]',
+              alt_search: 'Žádné výsledky pro [SEARCH_TERM]. Zobrazujeme výsledky pro [DIFFERENT_TERM] místo toho.',
+              search_suggestion: 'Žádné výsledky pro [SEARCH_TERM]. Zkuste:',
+              searching: 'Hledám [SEARCH_TERM]…',
+            },
+          });
+          var qp = new URLSearchParams(window.location.search).get('q');
+          if (qp) {
+            var input = document.querySelector('#search input');
+            if (input) { input.value = qp; input.dispatchEvent(new Event('input', { bubbles: true })); }
+          }
+        }
+      });
+    </script>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  /* Pagefind UI overrides — match accent + typography */
+  #search { padding: 24px 0 64px; }
+  .pagefind-ui {
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--fg);
+    --pagefind-ui-background: var(--bg-elev);
+    --pagefind-ui-border: var(--hairline);
+    --pagefind-ui-tag: var(--bg-elev-2);
+    --pagefind-ui-border-radius: var(--radius);
+    --pagefind-ui-font: var(--body-font);
+  }
+</style>

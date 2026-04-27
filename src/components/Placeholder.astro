@@ -1,0 +1,23 @@
+---
+interface Props {
+  label?: string;
+  badge?: string;
+  ratio?: string;
+  src?: string;
+  alt?: string;
+  klass?: string;
+  loading?: 'lazy' | 'eager';
+  width?: number;
+  height?: number;
+}
+const { label, badge, ratio = '16/10', src, alt = '', klass = 'card-img', loading = 'lazy', width, height } = Astro.props;
+const styleStr = `aspect-ratio: ${ratio};`;
+---
+<div class={`${klass}${src ? ' has-image' : ''}`} style={styleStr}>
+  {badge && <span class="badge-cat">{badge}</span>}
+  {src ? (
+    <img src={src} alt={alt} loading={loading} decoding="async" width={width} height={height} />
+  ) : (
+    label && <span class="placeholder-tag">▌ {label}</span>
+  )}
+</div>

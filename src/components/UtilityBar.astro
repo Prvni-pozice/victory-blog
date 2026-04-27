@@ -1,0 +1,17 @@
+---
+import { SITE } from '~/lib/categories';
+const today = new Date().toLocaleDateString('cs-CZ');
+---
+<div class="utility-bar" role="region" aria-label="Pomocný pruh">
+  <div class="shell">
+    <div class="util-left">
+      <span class="pill">● VICTORY BLOG</span>
+      <span>Aktualizováno {today}</span>
+    </div>
+    <div class="util-right">
+      <a href={SITE.mainSiteUrl} rel="noopener">Hlavní web</a>
+      <span style="opacity: 0.4">|</span>
+      <a href={`tel:${SITE.phone.replace(/\s/g, '')}`}>{SITE.phone}</a>
+    </div>
+  </div>
+</div>

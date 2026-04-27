@@ -1,0 +1,43 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import CategoryStrip from '~/components/CategoryStrip.astro';
+import ArticleCard from '~/components/ArticleCard.astro';
+import ListRow from '~/components/ListRow.astro';
+import Pagination from '~/components/Pagination.astro';
+import Icons from '~/components/Icons.astro';
+import { getCollection } from 'astro:content';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const all = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => +b.data.date - +a.data.date);
+  return paginate(all, { pageSize: 12 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props as { page: any };
+
+const total = page.total;
+const isFirst = page.currentPage === 1;
+---
+<BaseLayout
+  title={isFirst ? `Blog Victory Auto — všechny články` : `Blog — strana ${page.currentPage}`}
+  description="Všechny články o elektrické mobilitě, servisu a provozu užitkových e-vozů Victory Auto."
+  type="website"
+>
+  <CategoryStrip total={total} />
+
+  <div class="shell">
+    <div class="section-head" style="padding-top: 56px">
+      <div>
+        <span class="eyebrow">▌ Všechny články · strana {page.currentPage} / {page.lastPage}</span>
+        <h2>Archiv</h2>
+      </div>
+    </div>
+
+    <div class="article-grid">
+      {page.data.map((a: any) => <ArticleCard entry={a} />)}
+    </div>
+
+    <Pagination page={page} baseHref="/blog/" />
+  </div>
+</BaseLayout>

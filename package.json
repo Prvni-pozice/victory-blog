@@ -1,0 +1,22 @@
+{
+  "name": "victory-blog",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0 --port 4323",
+    "build": "astro build && pagefind --site dist --output-subdir _pagefind",
+    "preview": "astro preview --host 0.0.0.0 --port 4323",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^3.1.0",
+    "@astrojs/rss": "^4.0.7",
+    "@astrojs/sitemap": "^3.2.1",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "astro": "^4.16.0",
+    "lightningcss": "^1.32.0",
+    "pagefind": "^1.1.1"
+  }
+}
