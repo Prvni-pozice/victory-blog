@@ -25,7 +25,7 @@ Sledovali jsme **State of Health (SoH)** baterie u 38 vozů Victory K2E různéh
 
 Každý vůz reportuje SoH přes naši telemetrii každých 24 hodin. Mimo to evidujeme:
 
-- Počet a typ nabíjecích cyklů (AC slow / AC fast 22 kW / DC 50–150 kW)
+- Počet a typ nabíjecích cyklů (AC palubní 6,6 kW přes wallbox 22 kW / DC 50–60 kW)
 - Teplotní profil baterie během nabíjení i jízdy
 - Hloubku vybíjení (SoC nízké × vysoké)
 - Klimatický profil (skladování venku/uvnitř, zimní/letní průměry)
@@ -91,13 +91,13 @@ Po 24 měsících vypadají průměry takto:
 
 - Vozy v městské logistice (denně 60–100 km): **SoH 96,4 %**
 - Vinařské vozy (sezónní špička, jinak nízký nájezd): **SoH 97,8 %**
-- Vozy v dálkové dopravě (denně 200+ km, časté DC): **SoH 94,1 %**
+- Vozy v intenzivním kurýrním provozu (denně 200+ km, časté polední DC): **SoH 94,1 %**
 - Sklápěčky pro městské služby: **SoH 96,9 %**
 
 Žádný vůz nepoklesl pod 92 %. **Žádný vůz nepotřeboval výměnu článku ani BMS** v rámci záruky. Pro ekonomiku TCO to znamená, že předpokládaná zbytková cena po 5 letech je realisticky 35–40 % pořizovací — výrazně víc, než jsme čekali.
 
 ## Závěr
 
-Strach z rychlonabíjení je z větší části **dědictví minulých generací baterií**. Moderní LFP a NCM články zvládají DC bez problémů, pokud dodržíte teplotní okno a netlačíte je do extrémů SoC. Klíčové není "kolikrát DC", ale **jak hluboce vybíjíte, jak vysoko nabíjíte a kolik je teplých minut nad 40 °C**.
+Strach z rychlonabíjení je z větší části **dědictví minulých generací baterií**. Moderní LFP články (LiFePO4 v K2E) zvládají DC bez problémů, pokud dodržíte teplotní okno a netlačíte je do extrémů SoC. Klíčové není "kolikrát DC", ale **jak hluboce vybíjíte, jak vysoko nabíjíte a kolik je teplých minut nad 40 °C**.
 
 Pokud uvažujete o pořízení a chcete spočítat TCO realisticky (s degradací baterie po 5 letech, ne s katalogovou hodnotou), [domluvte si konzultaci](https://www.victoryauto.cz/kontakt). A pokud vás zajímá, jak vypadají reálná data po prvním roce u vinařů, koukněte na naši [případovou studii z Moravy](/blog/elektricke-dodavky/elektricka-dodavka-vinari-prvni-sezona/).
