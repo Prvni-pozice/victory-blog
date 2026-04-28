@@ -6,11 +6,10 @@ interface Props { active?: 'blog' | 'home'; }
 const { active = 'blog' } = Astro.props;
 
 const navItems = [
-  { label: 'Vozy', href: `${SITE.mainSiteUrl}/elektricke-dodavky` },
-  { label: 'Servis', href: `${SITE.mainSiteUrl}/servis` },
-  { label: 'Pro firmy', href: `${SITE.mainSiteUrl}/pro-firmy` },
   { label: 'Blog', href: '/', isBlog: true },
-  { label: 'O nás', href: `${SITE.mainSiteUrl}/o-nas` },
+  { label: 'Produkty', href: `${SITE.mainSiteUrl}/produkty` },
+  { label: 'Servis', href: `${SITE.mainSiteUrl}/udrzba-a-servis` },
+  { label: 'Hlavní web', href: SITE.mainSiteUrl },
   { label: 'Kontakt', href: `${SITE.mainSiteUrl}/kontakt` },
 ];
 ---
@@ -45,7 +44,7 @@ const navItems = [
           aria-label="Hledat na blogu"
         />
       </form>
-      <a class="btn btn-primary" href={`${SITE.mainSiteUrl}/konfigurator`} rel="noopener">Konfigurátor</a>
+      <a class="btn btn-primary" href={`${SITE.mainSiteUrl}/kontakt`} rel="noopener">Poptat vůz</a>
     </div>
   </div>
 </header>
