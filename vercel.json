@@ -1,0 +1,55 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/blog/novinky/dotace-2026-elektromobil-prehled",
+      "destination": "/blog/novinky/dotace-2025-elektromobil-prehled",
+      "permanent": true
+    },
+    {
+      "source": "/blog/novinky/dotace-2026-elektromobil-prehled/",
+      "destination": "/blog/novinky/dotace-2025-elektromobil-prehled/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/elektricke-dodavky/smetar-novy-jicin-rocni-zkusenost",
+      "destination": "/blog/elektricke-dodavky/elektricky-svoz-okresni-mesto-rocni-bilance",
+      "permanent": true
+    },
+    {
+      "source": "/blog/elektricke-dodavky/smetar-novy-jicin-rocni-zkusenost/",
+      "destination": "/blog/elektricke-dodavky/elektricky-svoz-okresni-mesto-rocni-bilance/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/elektricke-dodavky/v2l-mobilni-zdroj-z-baterie",
+      "destination": "/blog/elektricke-dodavky/co-je-v2l-a-kdy-se-hodi",
+      "permanent": true
+    },
+    {
+      "source": "/blog/elektricke-dodavky/v2l-mobilni-zdroj-z-baterie/",
+      "destination": "/blog/elektricke-dodavky/co-je-v2l-a-kdy-se-hodi/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/elektricke-dodavky/leasing-vs-koup-elektricka-dodavka",
+      "destination": "/blog/elektricke-dodavky/leasing-vs-koupe-elektricka-dodavka",
+      "permanent": true
+    },
+    {
+      "source": "/blog/elektricke-dodavky/leasing-vs-koup-elektricka-dodavka/",
+      "destination": "/blog/elektricke-dodavky/leasing-vs-koupe-elektricka-dodavka/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/elektricke-dodavky/posta-ricany-flotila-doruceni",
+      "destination": "/blog/elektricke-dodavky/last-mile-flotila-stredocesky-kraj",
+      "permanent": true
+    },
+    {
+      "source": "/blog/elektricke-dodavky/posta-ricany-flotila-doruceni/",
+      "destination": "/blog/elektricke-dodavky/last-mile-flotila-stredocesky-kraj/",
+      "permanent": true
+    }
+  ]
+}

@@ -113,6 +113,9 @@ const articleLd = {
           </div>
           <div class="meta-stats">
             <div class="meta-stat"><div class="v"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></div><div class="l">Publikováno</div></div>
+            {entry.data.updated && (
+              <div class="meta-stat"><div class="v"><time datetime={entry.data.updated.toISOString()}>{formatDate(entry.data.updated)}</time></div><div class="l">Aktualizováno</div></div>
+            )}
             <div class="meta-stat"><div class="v">{entry.data.readMin} min</div><div class="l">Doba čtení</div></div>
           </div>
         </div>

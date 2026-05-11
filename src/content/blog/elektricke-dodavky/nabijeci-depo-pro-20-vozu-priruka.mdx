@@ -5,6 +5,7 @@ category: elektricke-dodavky
 subcategory: pro-mesta
 author: mp
 date: 2026-03-10
+updated: 2026-05-11
 readMin: 14
 tag: "Příručka"
 placeholder: "Schéma: nabíjecí depo s 20 vozy"
@@ -12,13 +13,13 @@ heroImage: "https://www.victoryauto.cz/public/storage/thumb_m_03.jpg"
 heroAlt: "Schéma nabíjecího depa pro 20 elektrických dodávek s load managementem"
 relatedSlugs:
   - elektricke-dodavky/sklapecka-mestske-sluzby-srovnani
-  - elektricke-dodavky/smetar-novy-jicin-rocni-zkusenost
+  - elektricke-dodavky/elektricky-svoz-okresni-mesto-rocni-bilance
   - servis/rychlonabijeni-zivotnost-baterie
 seo:
   description: "Návrh nabíjecího depa pro 20 elektrických dodávek: rezervovaný příkon, AC vs. DC poměr, load management, OCPP backend, redundance a TCO. Praktická příručka."
 ---
 
-Postavit dobré nabíjecí depo pro flotilu 20 elektrických dodávek **není triviální technický úkol**. Je to průsečík elektroinženýrství, IT systémů, ekonomiky a provozního plánování. Tento článek je destilátem zkušeností z **tří reálných instalací**, které jsme dělali v posledních dvou letech — pro městské služby v Novém Jičíně (5 vozů), distribuční firmu v okolí Brna (12 vozů) a sklad logistiky u Mladé Boleslavi (24 vozů).
+Postavit dobré nabíjecí depo pro flotilu 20 elektrických dodávek **není triviální technický úkol**. Je to průsečík elektroinženýrství, IT systémů, ekonomiky a provozního plánování. Tento článek je destilátem zkušeností z **tří reálných instalací**, které jsme dělali v posledních dvou letech — městské služby v okresním městě v MS kraji (~5 vozů), distribuční firma v okolí Brna (~12 vozů) a logistický sklad ve Středočeském kraji (~24 vozů).
 
 Pokud aktuálně řešíte podobný projekt nebo se na něj chystáte, **použijte tento článek jako kontrolní seznam**. Není to přesný projekt — každá lokalita je jiná — ale 80 % otázek, které vás potkají, najdete tady zodpovězené.
 
@@ -68,9 +69,9 @@ Naivní odpověď: "DC je rychlejší, dejme samá DC." Špatně. **DC je 4–6�
 
 Pro běžné depo flotily 20 vozů doporučujeme:
 
-- **20× AC wallbox 22 kW** (jeden na vůz, paralelně k parkovacím místům)
-- **2× DC stanice 50–80 kW** (pro polední dotočení a pro situace, kdy vůz nestojí celou noc)
-- **1× DC backup 22 kW** (pro mobilní nasazení nebo vůz s poruchou)
+- **20× AC wallbox** (jeden na vůz, paralelně k parkovacím místům) — výkon wallboxu dimenzujte podle reálného onboard AC výkonu vozu (ověřte v aktuální specifikaci u prodejce: [https://www.victoryauto.cz/ke-stazeni](https://www.victoryauto.cz/ke-stazeni))
+- **2× DC stanice 50–80 kW** — jen pokud vůz DC rychlonabíjení podporuje (rovněž ověřte ve specifikaci)
+- **1× mobilní AC zdroj** jako záloha pro vůz s poruchou nebo nasazení v terénu
 
 Investiční rozpis (orientačně, ceny 2026):
 
@@ -83,7 +84,7 @@ Investiční rozpis (orientačně, ceny 2026):
 | Kabeláž, instalace, projekt | — | — | 850 000 Kč |
 | **Celkem** | | | **3 790 000 Kč** |
 
-Z toho lze typicky **získat dotaci 25 % až 60 %** podle programu OPZP nebo IROP. Aktuální podmínky pro infrastrukturu probíráme i v [článku o dotacích na elektromobily 2026](/blog/novinky/dotace-2026-elektromobil-prehled/) — bonus 25 tisíc Kč na vůz na nabíjení je možné si zařadit ke každé žádosti.
+Z toho lze typicky **získat dotaci 25 % až 60 %** podle programu OPZP nebo IROP (podmínky platné k Q2 2026 — vždy ověřte aktuální výzvu). Aktuální podmínky pro infrastrukturu probíráme i v [článku o dotacích na elektromobily](/blog/novinky/dotace-2025-elektromobil-prehled/). Konkrétní výše bonusu na nabíjecí infrastrukturu se v jednotlivých výzvách liší — detaily na <a href="https://www.sfzp.cz" rel="nofollow noopener">stránkách SFŽP</a> nebo [https://www.victoryauto.cz/financovani](https://www.victoryauto.cz/financovani).
 
 ## 4. Load management — srdce celého systému
 
@@ -115,7 +116,7 @@ Dvě varianty:
 - **Vlastní trafostanice** v depu (250 kVA, cena ~1,2 mil Kč) — nezávislost, ale dlouhá realizace (typicky 8–14 měsíců s ČEZ Distribucí)
 - **Pronájem** od distributora — rychlejší (3–5 měsíců), ale vyšší roční náklady
 
-Doporučujeme vlastní pro flotily 15+ vozů. Pro menší (5–10 vozů) má pronájem smysl, jak ukázala instalace v [Novém Jičíně](/blog/elektricke-dodavky/smetar-novy-jicin-rocni-zkusenost/).
+Doporučujeme vlastní pro flotily 15+ vozů. Pro menší (5–10 vozů) má pronájem smysl, jak ukázala instalace v [okresním městě v Moravskoslezském kraji](/blog/elektricke-dodavky/elektricky-svoz-okresni-mesto-rocni-bilance/).
 
 ## 6. Redundance a fallback
 
@@ -128,7 +129,7 @@ V naší infrastruktuře vždy doporučujeme:
 - **Manuální load shed** — operátor může dočasně vypnout nepriorit. wallboxy
 - **Notifikace** — load manager pošle SMS/Slack/e-mail, když nabíjení selhalo
 
-V instalaci v Mladé Boleslavi (24 vozů) jsme zažili **3 výpadky za rok** — 2× hlavní jistič po bouřce, 1× výpadek OCPP backendu. Ve všech třech případech **nedošlo k provoznímu výpadku**, protože redundance fungovala.
+V instalaci ve Středočeském kraji (~24 vozů) jsme zažili **3 výpadky za rok** — 2× hlavní jistič po bouřce, 1× výpadek OCPP backendu. Ve všech třech případech **nedošlo k provoznímu výpadku**, protože redundance fungovala.
 
 ## 7. Bezpečnost a kybernetika
 
@@ -154,7 +155,7 @@ I nejlepší technický projekt selže, pokud nejsou nastavené procesy:
 3. **Pravidla pro mimořádné situace** — kdo volá kam, když nabíjení selhalo
 4. **Měsíční reporting** — spotřeba, ztráty, anomálie
 
-V Novém Jičíně tento proces převzal dispečer technických služeb a trvalo zhruba 2 měsíce, než se "zkrojil". V Mladé Boleslavi byla potřeba dedikovaná energetik.
+V okresním městě v MS kraji tento proces převzal dispečer technických služeb a trvalo zhruba 2 měsíce, než se „zkrojil". Ve středočeské logistické instalaci byla potřeba dedikovaný energetik.
 
 ## 9. Časté chyby v projektech
 
@@ -192,6 +193,6 @@ Stavba depa pro 20 vozů **stojí čas, peníze a hodně pozornosti detailům**.
 2. Spočítat rezervovaný příkon **realisticky**
 3. Mít chytrý load management
 4. Plánovat redundanci a procesy
-5. Využít [dotace 2026](/blog/novinky/dotace-2026-elektromobil-prehled/)
+5. Využít [aktuální dotace](/blog/novinky/dotace-2025-elektromobil-prehled/)
 
 Pokud takový projekt právě řešíte, **rád vyjedu za vámi** a podíváme se na konkrétní lokaci. Naši konzultanti připravují projekty na klíč včetně dotační administrativy — [domluvte si schůzku](https://www.victoryauto.cz/kontakt). První schůzka je bezplatná a typicky trvá 90 minut.

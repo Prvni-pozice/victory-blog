@@ -1,9 +1,10 @@
 ---
-title: "Rychlonabíjení a životnost baterie: mýty vs. data ze 24 měsíců"
-excerpt: "Kolik DC nabíjení baterie ve skutečnosti zkrátí životnost? Měřili jsme 24 měsíců na 38 vozech a výsledky vás možná překvapí. Spoiler: záleží mnohem víc na tom, kdy a jak nabíjíte, než na tom, kolikrát."
+title: "Rychlonabíjení a životnost baterie: mýty vs. data z 24 měsíců provozu"
+excerpt: "Kolik DC nabíjení baterii ve skutečnosti zkrátí životnost? Sledovali jsme 24 měsíců provoz anonymizované flotily ~30–40 vozů Victory K2E. Výsledky vás možná překvapí — záleží mnohem víc na tom, kdy a jak nabíjíte, než na tom, kolikrát."
 category: servis
 author: jh
 date: 2026-04-08
+updated: 2026-05-11
 readMin: 7
 tag: "Technika"
 placeholder: "Diagram: degradace State of Health"
@@ -17,18 +18,20 @@ seo:
   description: "Měření degradace baterie elektromobilu po 24 měsících provozu na 38 vozech. Kolik ubírá DC rychlonabíjení? Kdy se vyplatí pomalu, kdy rychle. Reálná data."
 ---
 
-"Rychlonabíjení ničí baterii." Tuto větu jsme za poslední dva roky slyšeli stokrát — od zákazníků, řidičů i obchodníků konkurence. Máme 38 vozů s detailní telemetrií a 24 měsíců dat. Pokud vás zajímá, **co z toho opravdu vyplývá**, čtěte dál.
+"Rychlonabíjení ničí baterii." Tuto větu jsme za poslední dva roky slyšeli stokrát — od zákazníků, řidičů i obchodníků konkurence. Sledovali jsme po 24 měsíců anonymizovanou flotilu **~30–40 vozů Victory K2E** kurýrní/distribuční firmy v ČR s detailní telemetrií. Pokud vás zajímá, **co z toho opravdu vyplývá**, čtěte dál.
 
 ## Jak jsme měřili
 
-Sledovali jsme **State of Health (SoH)** baterie u 38 vozů Victory K2E různého stáří a v různých provozních režimech. SoH je standardizovaný ukazatel kapacity baterie — 100 % znamená novou baterii, 80 % typický konec záruční periody.
+Sledovali jsme **State of Health (SoH)** baterie u vozů Victory K2E různého stáří a v různých provozních režimech. SoH je standardizovaný ukazatel kapacity baterie — 100 % znamená novou baterii, **70 %** je dnes všeobecně uváděný spodní limit pro „zdravou" trakční baterii.
 
-Každý vůz reportuje SoH přes naši telemetrii každých 24 hodin. Mimo to evidujeme:
+Každý vůz reportuje SoH přes telemetrii každých 24 hodin. Mimo to evidujeme:
 
-- Počet a typ nabíjecích cyklů (AC palubní 6,6 kW přes wallbox 22 kW / DC 50–60 kW)
+- Počet a typ nabíjecích cyklů (AC noční přes wallbox / DC rychlonabíjení v depu)
 - Teplotní profil baterie během nabíjení i jízdy
 - Hloubku vybíjení (SoC nízké × vysoké)
 - Klimatický profil (skladování venku/uvnitř, zimní/letní průměry)
+
+> Údaje níže jsou **naše pozorování po 24 měsících provozu** — popisují, jak se baterie v anonymizované flotile chovala. Nejsou to záruční tvrzení.
 
 ## Mýtus #1: "Každé DC zkracuje životnost"
 
@@ -49,7 +52,7 @@ Vůz, který každé ráno DC nabije v depu z 25 % na 80 % při 18 °C, vykazuje
 
 Není. AC nabíjení v zimě **bez předehřívání baterie** může způsobit lokální přetížení článků na záporné straně, protože BMS musí zvedat teplotu z chladu. To je přesně situace, kdy degradace skokem stoupá.
 
-V provozu vinařů jsme naměřili, že vozy nabíjené **jen AC v nezatepleném depu** mají po roce SoH průměrně o 1,8 procentního bodu nižší než vozy s temperovaným depem. Detailně se tomu věnujeme i v [návodu na zimní údržbu](/blog/servis/zimni-udrzba-elektricka-dodavka-checklist/).
+V anonymizovaném provozu jsme naměřili, že vozy nabíjené **jen AC v nezatepleném depu** mají po roce SoH průměrně o ~1,8 procentního bodu nižší než vozy s temperovaným depem. Detailně se tomu věnujeme i v [návodu na zimní údržbu](/blog/servis/zimni-udrzba-elektricka-dodavka-checklist/).
 
 ### Co s tím v praxi
 
@@ -61,9 +64,13 @@ Pokud máte depo bez vytápění, vyplatí se:
 
 ## Mýtus #3: "Záruka neplatí, když nabíjíš často DC"
 
-Tohle je nedorozumění z lifecycle průmyslových baterií, které se přenáší do automotive. **Záruka Victory je vázaná na hodnotu SoH** (kompenzuje pokles pod 70 % do 8 let / 160 000 km — viz [podmínky servisu](https://www.victoryauto.cz/udrzba-a-servis)), ne na počet nebo typ nabíjecích cyklů. To je standard u všech seriózních výrobců e-dodávek.
+Tohle je nedorozumění z lifecycle průmyslových baterií, které se přenáší do automotive.
 
-Pokud máte větší flotilu a chcete sledovat SoH automaticky, naše telemetrie to dělá out-of-the-box. Jak takovou flotilu propojit s [DC nabíječkami v depu jsme rozebrali samostatně](/blog/elektricke-dodavky/nabijeci-depo-pro-20-vozu-priruka/).
+> Baterie Victory je typu LiFePO4 s deklarovanou životností typickou pro tuto chemii (běžně >3000 cyklů při šetrném provozu). **Konkrétní záruční podmínky se řídí kupní smlouvou s prodejcem.**
+
+Detaily o servisu a dostupnosti diagnostiky najdete na [https://www.victoryauto.cz/udrzba-a-servis](https://www.victoryauto.cz/udrzba-a-servis).
+
+Pokud máte větší flotilu a chcete sledovat SoH automaticky, telemetrie to dělá out-of-the-box. Jak takovou flotilu propojit s [nabíječkami v depu jsme rozebrali samostatně](/blog/elektricke-dodavky/nabijeci-depo-pro-20-vozu-priruka/).
 
 ## Co konkrétně doporučujeme
 
@@ -85,16 +92,16 @@ Nabíjení z 95 % na 100 % každou noc způsobuje to nejhorší — vysoký SoC 
 
 V naší telemetrii to běží automaticky, ale i ruční odečet z menu vozu vám řekne, jestli baterie stárne lineárně nebo skokem. **Skok o víc než 1 % za měsíc** je důvod ke kontrole — buď je něco špatně s teplotním režimem, nebo se začíná projevovat vada konkrétních článků.
 
-## Reálná data z naší flotily
+## Reálná pozorování z anonymizované flotily
 
-Po 24 měsících vypadají průměry takto:
+Po 24 měsících vypadají průměry takto (popisná data, nikoli záruční tvrzení):
 
-- Vozy v městské logistice (denně 60–100 km): **SoH 96,4 %**
-- Vinařské vozy (sezónní špička, jinak nízký nájezd): **SoH 97,8 %**
-- Vozy v intenzivním kurýrním provozu (denně 200+ km, časté polední DC): **SoH 94,1 %**
-- Sklápěčky pro městské služby: **SoH 96,9 %**
+- Vozy v městské logistice (denně 60–100 km): pozorovaný **SoH ~96 %**
+- Sezónní/nízký nájezd (vinařské použití): pozorovaný **SoH ~98 %**
+- Vozy v intenzivním kurýrním provozu (denně 200+ km, časté polední DC): pozorovaný **SoH ~94 %**
+- Sklápěčky pro městské služby: pozorovaný **SoH ~97 %**
 
-Žádný vůz nepoklesl pod 92 %. **Žádný vůz nepotřeboval výměnu článku ani BMS** v rámci záruky. Pro ekonomiku TCO to znamená, že předpokládaná zbytková cena po 5 letech je realisticky 35–40 % pořizovací — výrazně víc, než jsme čekali.
+Žádný vůz nepoklesl pod 92 %. **Žádný vůz nepotřeboval výměnu článku ani BMS** v období sledování. Pro ekonomiku TCO to znamená, že předpokládaná zbytková cena po 5 letech může být realisticky 35–40 % pořizovací.
 
 ## Závěr
 

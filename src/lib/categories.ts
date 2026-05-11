@@ -52,9 +52,9 @@ export const SITE = {
   url: 'https://blog.victoryauto.cz',
   mainSiteUrl: 'https://www.victoryauto.cz',
   description: 'Blog o elektrických užitkových vozech, servisu a praxi Victory Auto. Případové studie, srovnání, dotace.',
-  phone: '+420 770 123 456',
+  phone: '+420 703 146 105',
   email: 'info@victoryauto.cz',
-  address: 'Na Pankráci 1683, 140 00 Praha 4',
+  address: 'Podivínská 1559, 691 02 Velké Bílovice',
   social: {
     facebook: 'https://www.facebook.com/victoryauto',
     youtube: 'https://www.youtube.com/@victoryauto',
